@@ -1,5 +1,89 @@
  [Changelog](https://github.com/kean/DFImageManager/releases) for all versions
 
+# DFImageManager 1.0.0
+
+DFImageManager 1.0.0 is the first major release. It introduces multiple changes that make DFImageManager more robust and future proof. The main difference is the absence of conditional compilation that relied on `__has_include` macros, everything is implemented using classes. Conditional compilation now only takes place when default image manager is created and it doesn't rely on `__has_include`. In practice there are no changes whatsoever to the default image manager configuration, everything should work the same as it did in version 0.8.0.
+
+## Changes
+
+### Major
+
+- Now requires iOS 8.0+
+- Remove conditional compilation that relied on __has_include macros
+- DFImageManager/NSURLSession subspec is removed, sources made part of DFImageManager/Core subspec
+- Add DFCompositeImageDecoder
+- Add DFWebPImageDecoder
+- Add DFAnimatedImageView, DFAnimatedImageDecoder, DFAnimatedImageProcessor
+- DFImageManager/PhotosKit subspec is now optional
+- Remove +[DFImageManager sharedDecoder] dependency injector, there is now a single entry point to configure image manager and that is DFImageManagerConfiguration
+- DFImageManagerConfiguration no longer forces you to initialize it with image fetcher instance
+- Remove -[DFURLImageFetcher initWithSession:sessionDelegate:] method and DFURLImageFetcherSessionDelegate protocol, this feature was too hardcode for basic built-in networking.
+
+### Minor
+- #12 Lightweight generics thanks to @adly-holler
+- Add limited Carthage support
+- Add convenience class methods to DFImageManager that forward calls to sharedManager 
+- -[DFImageProcessing shouldProcessImage:forRequest:partial:] method is now optional
+- [DFImageTask resume] method now returns image task
+- Fix -[NSCache df_recommendedTotalCostLimit] for watchOS
+- Remove +[DFImageManager addSharedManager:] method
+- Remove +[DFImageManager defaultManager] method
+
+
+# DFImageManager 0.8.0
+
+`DFImageManager 0.8.0` makes things more cohesive. Documentation, examples, demos, project structure - everything was revised and uncluttered. This release also features limited watchOS 2 support, which at this point  includes `DFImageManager/Core` and `DFImageManager/NSURLSession` subpecs.
+
+## Changes
+
+### Major
+
+- #28 DFImageFetching protocol now requires fetch operation to conform to simple DFImageFetchingOperation protocol
+- #15 watchOS 2 support, at this moment only DFImageManager/Core and DFImageManager/NSURLSession subpecs are available
+- DFImageManager/Extensions subspec with DFCompositeImageTask and DFProxyImageManager are no longer part of the framework. There are multiple more generic ways to implement those features.
+- Revised documentation, examples, demos, project structure
+
+### Minor
+
+- #75 Provide an easier way to enable progressive image decoding
+- #73 -[DFImageManaging imageTaskForRequest:completion:] and -[DFImageManaging imageTaskForResource:completion:] methods return nonnull image task instead of nullable
+- Cleaner DFImageRequestOptions implementation
+- Remove canonical requests feature, which was very application specific
+- Reduce number of DFImageRequestPriority options, DFImageRequestPriority no longer bound to NSOperationQueuePriority
+- Multiple implementation details are improved across the board
+
+
+# DFImageManager 0.7.1
+
+`DFImageManager 0.7.1` focuses on stability and performance. The main changes were made to the image processing. Images are now decompressed and scaled in a single step (x2-4 times faster depending on scale, significantly reduces memory usage) which allows DFImageManager to scale large images (~6000x4000 px) and prepare them for display with ease.
+
+## Changes
+
+### Major
+
+- #64 Image decompression and scaling are now made in a single step (x2-4 times faster depending on scale, significantly reduces memory usage)
+
+### Minor 
+
+- #70 Always draw decompressed images using kCGImageAlphaPremultipliedFirst and CGColorSpaceCreateDeviceRGB
+- #67 Refactor task queue in DFURLImageFetcher; Delay only execution of session tasks, not cancellation
+- #66 DFPhotosKitImageFetcher remove obsolete targetSize and contentMode checks in isRequestCacheEquivalent:toRequest method
+- #65 Remove excessive initWithAnimatedGIFData: method from DFAnimatedImage; make animatedImage property nonnull
+- #63 Remove unused methods from UIImage+DFImageUtilities
+- #60 Make DFImageManager/Core subspec smaller by moving non-core classes to DFImageManager/Extensions subspec.
+- Remove excessive DFImageViewDelegate
+- Remove excessive imageTargetSize, imageContentMode and imageRequestOptions properties from DFImageView
+- Remove excessive -[DFURLImageFetcherDelegate URLImageFetcher:didEncounterError:] method
+
+### Bugfix
+
+- #71 BUGFIX: DFImageManagerImageLoader sometimes fails to cancel fetch operations
+- #69 BUGFIX: Fix -[DFImageManager invalidateAndCancel]
+- #68 BUGFIX: Add optional -[DFImageFetching invalidate] method that would allow DFURLImageFetcher and DFAFImageFetcher to invalidate NSURLSession and release delegate
+- #62 BUGFIX: Fix GIF cost calculation in DFImageCache
+- BUGFIX: Fix DFImageView priority management
+
+
 # DFImageManager 0.7.0
 
 `DFImageManager 0.7.0` brings progressive image decoding support, and puts everything in its right place. It adds a separate stage for image decoding (see new `DFImageDecoding` protocol), and narrows role of the `DFImageFetching` protocol which is now only responsible for fetching image data (NSData).

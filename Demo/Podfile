@@ -1,11 +1,24 @@
-platform :ios, "7.0"
+platform :ios, "8.0"
 
-xcodeproj "DFImageManagerSample.xcodeproj"
+xcodeproj "DFImageManager.xcodeproj"
 
 source "https://github.com/CocoaPods/Specs.git"
 
-pod "DFImageManager", :path => "../"
-pod "DFImageManager/AFNetworking", :path => "../"
-pod "DFImageManager/GIF", :path => "../"
+target 'DFImageManager-Example', :exclusive => true do
+	pod "DFImageManager", :path => "../"
+	pod "DFImageManager/AFNetworking", :path => "../"
+	pod "DFImageManager/GIF", :path => "../"
+	pod "DFImageManager/WebP", :path => "../"
+	pod "DFImageManager/PhotosKit", :path => "../"
 
-pod "AFNetworking/UIKit", "~> 2.0"
+	pod "AFNetworking/UIKit", "~> 2.0"
+end
+
+target 'DFImageManager-Tests', :exclusive => true do
+	pod "DFImageManager", :path => "../"
+	pod "DFImageManager/AFNetworking", :path => "../"
+	pod "DFImageManager/GIF", :path => "../"
+	pod "DFImageManager/WebP", :path => "../"
+	
+	pod "OHHTTPStubs"
+end
